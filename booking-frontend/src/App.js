@@ -2,35 +2,25 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
+  const [name, setName] = useState("");
+  const [tickets, setTickets] = useState(1);
   const [status, setStatus] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [ticketsLeft, setTicketsLeft] = useState(5);
 
   const bookTicket = () => {
-    if (ticketsLeft <= 0) {
-      setStatus("❌ All tickets sold out");
+    if (!name) {
+      setStatus("⚠️ Please enter your name");
       return;
     }
 
-    setLoading(true);
     setStatus("🔄 Connecting to booking server...");
 
     setTimeout(() => {
-      setStatus("⚙️ Processing booking request...");
+      setStatus("✅ Server connected successfully");
     }, 1000);
 
     setTimeout(() => {
-      const success = Math.random() > 0.3;
-
-      if (success) {
-        setTicketsLeft(ticketsLeft - 1);
-        setStatus("✅ Ticket booked successfully!");
-      } else {
-        setStatus("⚠️ Booking failed due to concurrency conflict");
-      }
-
-      setLoading(false);
-    }, 2500);
+      setStatus(`💾 Data saved successfully for ${name} (${tickets} ticket)`);
+    }, 2000);
   };
 
   return (
@@ -38,13 +28,31 @@ function App() {
       <h1>Concurrent Ticket Booking System</h1>
 
       <div className="card">
-        <p>Available Tickets: <b>{ticketsLeft}</b></p>
 
-        <button onClick={bookTicket} disabled={loading}>
-          {loading ? "Processing..." : "Book Ticket"}
-        </button>
+        <input
+          placeholder="Enter your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={{padding:"10px", marginBottom:"10px", width:"90%"}}
+        />
+
+        <br/>
+
+        <input
+          type="number"
+          min="1"
+          max="5"
+          value={tickets}
+          onChange={(e) => setTickets(e.target.value)}
+          style={{padding:"10px", marginBottom:"10px", width:"90%"}}
+        />
+
+        <br/>
+
+        <button onClick={bookTicket}>Book Ticket</button>
 
         <p className="status">{status}</p>
+
       </div>
     </div>
   );
