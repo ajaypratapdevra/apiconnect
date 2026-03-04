@@ -1,14 +1,24 @@
 import { useState } from "react";
 import "./App.css";
 
+const products = [
+  { id: 1, name: "VIP Ticket", price: 1200 },
+  { id: 2, name: "Premium Ticket", price: 800 },
+  { id: 3, name: "Standard Ticket", price: 400 },
+];
+
 function App() {
-  const [name, setName] = useState("");
-  const [tickets, setTickets] = useState(1);
+  const [cart, setCart] = useState([]);
   const [status, setStatus] = useState("");
 
-  const bookTicket = () => {
-    if (!name) {
-      setStatus("⚠️ Please enter your name");
+  const addToCart = (product) => {
+    setCart([...cart, product]);
+    setStatus(`${product.name} added to cart`);
+  };
+
+  const checkout = () => {
+    if (cart.length === 0) {
+      setStatus("⚠️ Your cart is empty");
       return;
     }
 
@@ -19,40 +29,52 @@ function App() {
     }, 1000);
 
     setTimeout(() => {
-      setStatus(`💾 Data saved successfully for ${name} (${tickets} ticket)`);
+      setStatus("💾 Order saved successfully");
+      setCart([]);
     }, 2000);
   };
 
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+
   return (
     <div className="container">
-      <h1>Concurrent Ticket Booking System</h1>
+      <h1>Ticket Store</h1>
 
-      <div className="card">
+      <div style={{ display: "flex", gap: "20px", justifyContent: "center", flexWrap: "wrap" }}>
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="card"
+            style={{ width: "220px", textAlign: "center" }}
+          >
+            <h3>{product.name}</h3>
+            <p>₹{product.price}</p>
 
-        <input
-          placeholder="Enter your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{padding:"10px", marginBottom:"10px", width:"90%"}}
-        />
+            <button onClick={() => addToCart(product)}>
+              Add to Cart
+            </button>
+          </div>
+        ))}
+      </div>
 
-        <br/>
+      <div className="card" style={{ marginTop: "40px", maxWidth: "400px", marginInline: "auto" }}>
+        <h2>Cart</h2>
 
-        <input
-          type="number"
-          min="1"
-          max="5"
-          value={tickets}
-          onChange={(e) => setTickets(e.target.value)}
-          style={{padding:"10px", marginBottom:"10px", width:"90%"}}
-        />
+        {cart.length === 0 && <p>No items yet</p>}
 
-        <br/>
+        {cart.map((item, index) => (
+          <p key={index}>
+            {item.name} - ₹{item.price}
+          </p>
+        ))}
 
-        <button onClick={bookTicket}>Book Ticket</button>
+        <hr />
+
+        <h3>Total: ₹{total}</h3>
+
+        <button onClick={checkout}>Checkout</button>
 
         <p className="status">{status}</p>
-
       </div>
     </div>
   );
