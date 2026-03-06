@@ -4,11 +4,11 @@ import { connectRedis } from './src/config/redis.js';
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
-    await connectRedis();
+  await connectRedis();
 
-    app.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
 };
 
 startServer();
